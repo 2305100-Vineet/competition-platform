@@ -15,7 +15,7 @@ export default function Header() {
     <header className="site-header">
       <Link to="/" className="navbar-brand">
         <span className="navbar-brand-badge"><Trophy size={16} /></span>
-        CompetitionHub
+        Arenafy
       </Link>
       <nav className="site-nav">
         <NavLink to="/tournaments" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>

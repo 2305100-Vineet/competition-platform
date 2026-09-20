@@ -19,6 +19,9 @@ export default function TournamentDetail() {
   const [editingResultFor, setEditingResultFor] = useState(null);
   const [resolvingRegId, setResolvingRegId] = useState(null);
   const [justUpdatedMatchId, setJustUpdatedMatchId] = useState(null);
+  const [showMatchDayForm, setShowMatchDayForm] = useState(false);
+  const [matchDayTeamIds, setMatchDayTeamIds] = useState([]);
+  const [matchDayError, setMatchDayError] = useState('');
 
   const load = async () => {
     const [tRes, mRes] = await Promise.all([
@@ -82,9 +85,38 @@ export default function TournamentDetail() {
     }, 260);
   };
 
+  const toggleMatchDayTeam = (teamId) => {
+    setMatchDayTeamIds((prev) =>
+      prev.includes(teamId) ? prev.filter((id) => id !== teamId) : [...prev, teamId]
+    );
+  };
+
+  const submitMatchDay = async (e) => {
+    e.preventDefault();
+    setMatchDayError('');
+    if (matchDayTeamIds.length < 2) {
+      setMatchDayError('Select at least 2 teams for this match day');
+      return;
+    }
+    try {
+      await apiClient.post('/matches', {
+        tournamentId: id,
+        format: 'points_league',
+        teamIds: matchDayTeamIds
+      });
+      setMatchDayTeamIds([]);
+      setShowMatchDayForm(false);
+      await load();
+      toast.success('Match day created');
+    } catch (err) {
+      setMatchDayError(err.response?.data?.message || 'Failed to create match day');
+    }
+  };
+
   const matchLabel = (m) => {
     if (m.participants.length === 2) return m.participants.map((p) => p.teamNameSnapshot).join(' vs ');
     if (m.participants.length === 1) return `${m.participants[0].teamNameSnapshot} — Bye`;
+    if (m.participants.length > 2) return m.participants.map((p) => p.teamNameSnapshot).join(', ');
     return 'TBD vs TBD';
   };
 
@@ -110,7 +142,7 @@ export default function TournamentDetail() {
               Open Registration
             </button>
           )}
-          {matches.length === 0 && (
+          {tournament.discipline !== 'pubg' && matches.length === 0 && (
             <>
               <button className="btn btn-secondary" onClick={() => runAction(
                 () => apiClient.post('/matches/generate/round-robin', { tournamentId: id }),
@@ -126,6 +158,37 @@ export default function TournamentDetail() {
               </button>
             </>
           )}
+          {tournament.discipline === 'pubg' && tournament.participants.length >= 2 && (
+            <button className="btn btn-secondary" onClick={() => setShowMatchDayForm((v) => !v)}>
+              {showMatchDayForm ? 'Cancel' : '+ Create Match Day'}
+            </button>
+          )}
+        </div>
+      )}
+
+      {showMatchDayForm && (
+        <div className="section-card">
+          <p className="page-subtitle" style={{ marginTop: 0 }}>
+            Select the squads playing in this match day (at least 2).
+          </p>
+          <form onSubmit={submitMatchDay}>
+            <div className="match-day-team-list">
+              {tournament.participants.map((p) => (
+                <label key={p.teamId} className="match-day-team-option">
+                  <input
+                    type="checkbox"
+                    checked={matchDayTeamIds.includes(p.teamId)}
+                    onChange={() => toggleMatchDayTeam(p.teamId)}
+                  />
+                  {p.teamNameSnapshot}
+                </label>
+              ))}
+            </div>
+            {matchDayError && <p className="error-text">{matchDayError}</p>}
+            <button type="submit" className="btn btn-primary" style={{ marginTop: '0.75rem' }}>
+              Create Match Day ({matchDayTeamIds.length} selected)
+            </button>
+          </form>
         </div>
       )}
 

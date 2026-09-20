@@ -6,8 +6,8 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-grid">
         <div>
-          <div className="footer-brand"><Trophy size={16} /> CompetitionHub</div>
-          <p className="footer-tagline">Tournaments, fixtures, and live standings for cricket and PUBG competitions — all in one place.</p>
+          <div className="footer-brand"><Trophy size={16} /> Arenafy</div>
+          <p className="footer-tagline">Your arena for cricket, football, and PUBG — tournaments, fixtures, and live standings, all in one place.</p>
         </div>
         <div>
           <div className="footer-col-title">Company</div>
@@ -25,7 +25,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} CompetitionHub. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Arenafy. All rights reserved.</span>
         <span>Terms · Privacy</span>
       </div>
     </footer>

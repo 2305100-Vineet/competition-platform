@@ -723,3 +723,18 @@ tbody tr:hover { background: var(--surface-2); }
   .tournament-card-thumb { display: none; }
   .site-nav .btn { flex: 1; }
 }
+
+.match-day-team-list {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.match-day-team-option {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.5rem 0.9rem; font-size: 0.88rem; cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.match-day-team-option:has(input:checked) {
+  border-color: var(--pubg); background: rgba(196,64,46,0.1);
+}
+.match-day-team-option input { width: auto; cursor: pointer; }

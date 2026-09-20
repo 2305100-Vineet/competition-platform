@@ -38,18 +38,13 @@ const tournamentSchema = new mongoose.Schema({
     }
   ],
 
-  // Recomputed from scratch after every result submission — round-robin only for now.
-  standings: [
-    {
-      teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
-      teamNameSnapshot: String,
-      played: { type: Number, default: 0 },
-      won: { type: Number, default: 0 },
-      lost: { type: Number, default: 0 },
-      tied: { type: Number, default: 0 },
-      points: { type: Number, default: 0 }
-    }
-  ],
+  // Mixed, not a typed subschema — the standings shape differs by format
+  // (round_robin: played/won/lost/tied/points; points_league:
+  // matchesPlayed/totalPoints/bestPlacement). A strict subschema silently
+  // strips fields it doesn't recognize, which is exactly what was zeroing
+  // out every PUBG tournament's standings. Mixed stores whatever shape
+  // recomputeStandings() produces, as-is.
+  standings: { type: mongoose.Schema.Types.Mixed, default: [] },
 
   stages: [{ type: mongoose.Schema.Types.Mixed }]
 }, { timestamps: true });

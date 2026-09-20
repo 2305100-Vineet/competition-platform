@@ -8,7 +8,7 @@ export default function Contact() {
       <div className="section-card contact-card">
         <div className="contact-item">
           <Mail size={18} />
-          <span>support@competitionhub.com</span>
+          <span>support@arenafy.com</span>
         </div>
         <div className="contact-item">
           <MessageCircle size={18} />
